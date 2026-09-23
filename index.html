@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#d0608f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NOW">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>NOW: what deserves your attention</title>
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg1:#f8edf3;--bg2:#edf4fa;--card:#fffafd;--ink:#30364a;--muted:#6b6d82;--line:#e8cfdc;
+  --accent:#d95f91;--accent-ink:#a83f70;--accent2:#4f668f;--soft:#f4dce8;--blue:#dce8f5;
+  --good:#e3f0ea;--good-ink:#2f6b52;--warn:#f8ead7;--field:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg1:#1d1a24;--bg2:#171c26;--card:#262330;--ink:#ece8f2;--muted:#a6a3b8;--line:#3a3448;
+    --accent:#e8749f;--accent-ink:#f3a3c2;--accent2:#9db7e6;--soft:#3a2a37;--blue:#28344a;
+    --good:#213a2f;--good-ink:#8fd1b3;--warn:#3d3222;--field:#1f1c29;
+  }
+}
+:root[data-theme="dark"]{
+  --bg1:#1d1a24;--bg2:#171c26;--card:#262330;--ink:#ece8f2;--muted:#a6a3b8;--line:#3a3448;
+  --accent:#e8749f;--accent-ink:#f3a3c2;--accent2:#9db7e6;--soft:#3a2a37;--blue:#28344a;
+  --good:#213a2f;--good-ink:#8fd1b3;--warn:#3d3222;--field:#1f1c29;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100vh;
+  background-color:var(--bg1);
+  background-image:linear-gradient(135deg,var(--bg1),var(--bg2));
+  background-attachment:fixed;
+  color:var(--ink);
+  font-family:Georgia,"Times New Roman",serif;
+  line-height:1.55;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent2)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{max-width:960px;margin:0 auto;padding:18px 16px 70px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.brand{font-weight:700;font-size:26px;letter-spacing:.06em;color:var(--accent2)}
+.tag{font-size:13px;color:var(--muted);font-style:italic}
+.nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;scrollbar-width:thin}
+.nav button{
+  flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--accent2);
+  border-radius:999px;padding:7px 13px;white-space:nowrap;font-size:14px
+}
+.nav button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.banner{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  background:var(--blue);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin-bottom:14px;font-size:14px
+}
+.hero{
+  background:linear-gradient(135deg,#d0608f,#6f8fc0);color:#fff;border-radius:22px;
+  padding:24px 22px;margin-bottom:16px
+}
+.hero small{opacity:.85}
+.hero h1{font-size:29px;line-height:1.2;margin:6px 0 8px;font-weight:700}
+.hero p{margin:0;max-width:56ch;color:#fff6fa}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hero .row{margin-top:16px}
+.hero select{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:11px;padding:9px 12px}
+.hero select option{color:#30364a;background:#fff}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:18px;margin-bottom:16px
+}
+h2{margin:0 0 4px;font-size:19px;color:var(--accent2)}
+h3{margin:0 0 4px;font-size:17px}
+.muted{color:var(--muted);font-size:13.5px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid2 .card{margin-bottom:0}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.btn{border:1px solid var(--line);background:var(--field);border-radius:10px;padding:8px 12px;font-size:14px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.btn.soft{background:var(--blue);color:var(--accent2)}
+.btn.light{background:#fff8fc;color:#a83f70;border:0;font-weight:700}
+.btn.small{padding:5px 9px;font-size:13px}
+.btn.danger{color:var(--accent-ink)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 12px}
+.chip{border:1px solid var(--line);background:var(--field);border-radius:999px;padding:5px 12px;font-size:13.5px}
+.chip.on{background:var(--soft);border-color:var(--accent);color:var(--accent-ink)}
+form.form{display:grid;gap:9px;margin-top:8px}
+.form input,.form select,.form textarea{
+  background:var(--field);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%
+}
+.form textarea{min-height:66px;resize:vertical}
+.form .inline{display:flex;gap:9px;flex-wrap:wrap}
+.form .inline>*{flex:1;min-width:120px}
+.form label.check{display:flex;align-items:center;gap:8px;font-size:14px}
+.form label.check input{width:auto}
+.form .btn.pri{padding:10px}
+.rec{
+  border:1px solid var(--line);border-radius:16px;padding:18px;
+  background:linear-gradient(135deg,var(--soft),var(--blue))
+}
+.rec .kind{font-size:13px;color:var(--accent-ink);font-style:italic}
+.rec h3{font-size:22px;margin:4px 0 8px}
+.rec p{margin:8px 0}
+.reward{background:var(--good);color:var(--good-ink);border-radius:10px;padding:8px 11px;font-size:14px;margin:10px 0}
+.belief{font-style:italic;color:var(--muted);font-size:14.5px}
+.clock{font-size:44px;font-weight:700;color:var(--accent2);letter-spacing:.03em;margin:6px 0}
+.item{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-top:1px solid var(--line);padding:11px 0}
+.item:first-child{border-top:0}
+.item .grow{flex:1;min-width:0}
+.item b{font-size:15px}
+.item small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.item .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.badge{font-size:12px;background:var(--soft);padding:2px 8px;border-radius:999px;white-space:nowrap;color:var(--accent-ink)}
+.badge.good{background:var(--good);color:var(--good-ink)}
+.badge.blue{background:var(--blue);color:var(--accent2)}
+.empty{color:var(--muted);font-size:14px;padding:6px 0}
+.picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.pick{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--field);text-align:left;display:block;width:100%}
+.pick span{display:block;font-size:12.5px;color:var(--muted)}
+.pick b{display:block;margin-top:2px;font-size:15px}
+.big{font-size:32px;font-weight:700;color:var(--accent2);line-height:1.1}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.plan-line{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:3px 0}
+.hl{border:1px solid var(--accent);border-radius:14px;padding:12px;background:var(--soft);margin:8px 0}
+#toast{
+  position:fixed;left:50%;transform:translateX(-50%) translateY(20px);
+  bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  background:var(--accent2);color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;text-align:center;z-index:10
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion: reduce){#toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div><div class="brand">NOW</div><div class="tag">Choose what matters. Do it now. Rest without guilt.</div></div>
+    <div id="resetArea"></div>
+  </header>
+  <div id="app"></div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- storage ---------- */
+const KEY='now_v2';
+let storageOk=true;
+const blank=()=>({
+  tasks:[],proof:[],bank:{earned:0,spent:0},
+  pantry:[],meals:[],workouts:[],books:[],places:[],dream:[],movies:[],songs:[],ideas:[],
+  ui:{tab:'now',avail:60,focus:'core',mood:'all',feeling:'all',need:'',office:false}
+});
+function load(){
+  try{
+    const r=localStorage.getItem(KEY);
+    if(r){const o=JSON.parse(r);const b=blank();return Object.assign(b,o,{ui:Object.assign(b.ui,o.ui||{})});}
+  }catch(e){storageOk=false;}
+  return blank();
+}
+let D=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){storageOk=false;}}
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now()*1000+Math.floor(Math.random()*1000);
+function fmt(m){
+  m=Math.round(m);
+  if(m<60)return m+' min';
+  const h=Math.floor(m/60),r=m%60;
+  return r?`${h} hr ${r} min`:`${h} hr${h>1?'s':''}`;
+}
+const bal=()=>Math.max(0,D.bank.earned-D.bank.spent);
+const DAY=864e5;
+const isToday=t=>new Date(t).toDateString()===new Date().toDateString();
+const find=(list,id)=>D[list].find(x=>String(x.id)===String(id));
+const yt=q=>'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
+const roundTo=(m,s)=>Math.max(s,Math.round(m/s)*s);
+let toastT;
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3400);}
+function addProof(type,text,minutes,feel,finished){
+  D.proof.push({id:uid(),type,text,minutes:minutes||0,feel:feel||'',finished:!!finished,at:Date.now()});
+}
+function weekWork(){
+  const since=Date.now()-7*DAY;
+  const w=D.proof.filter(p=>p.at>=since&&(p.type==='task'||p.type==='workout'));
+  return {mins:w.reduce((s,p)=>s+p.minutes,0),count:w.length};
+}
+function belief(){
+  const w=weekWork();
+  if(w.mins>0)return `This week you put ${fmt(w.mins)} into things you decided mattered. You have done this before, so you can begin.`;
+  if(D.proof.some(p=>p.type==='task'||p.type==='workout'))return 'You have shown up for something that mattered before. This is the same move.';
+  return 'Your first proof starts with one small session. You only have to begin.';
+}
+
+/* ---------- static knowledge ---------- */
+const TABS=[['now','🌸 Now'],['rack','📋 Rack'],['food','🍽️ Food'],['strong','💪 Strong'],['books','📚 Books'],['places','🗺️ Places'],['movies','🎬 Movies'],['songs','🎵 Songs'],['ideas','💡 Ideas'],['proof','🌱 Proof']];
+
+const STARTERS=[
+  {name:'Vegetable fried rice',ings:['rice','egg','onion','carrot'],office:true,mins:20},
+  {name:'Dal and rice',ings:['lentils','rice','onion','tomato'],office:true,mins:35},
+  {name:'Egg sandwich',ings:['bread','egg','tomato'],office:true,mins:10},
+  {name:'Oats with fruit',ings:['oats','milk','banana'],office:true,mins:5},
+  {name:'Chickpea salad',ings:['chickpeas','onion','tomato','cucumber'],office:true,mins:10},
+  {name:'Vegetable noodles',ings:['noodles','onion','cabbage','carrot'],office:true,mins:20},
+  {name:'Egg roll wrap',ings:['roti','egg','onion'],office:true,mins:12},
+  {name:'Yogurt bowl',ings:['yogurt','banana','oats'],office:true,mins:5},
+  {name:'Potato curry with rice',ings:['potato','onion','tomato','rice'],office:false,mins:35}
+];
+
+const FOCUS={core:'Core',legs:'Legs',arms:'Arms & shoulders',back:'Back & posture',cardio:'Cardio',flex:'Flexibility'};
+const EX={
+  core:[['Plank','Mat','Hold 3 rounds of 30 to 45 seconds. Keep hips level.'],['Dead bug','Mat','Slow opposite arm and leg. Lower back stays down.'],['Bicycle crunch','Mat','Controlled, not fast. 3 sets of 12 each side.'],['Hanging knee raise','Pull-up bar','Lift knees without swinging. 3 sets of 8.'],['Ab wheel rollout','Ab wheel','Advanced. Build up with planks first.']],
+  legs:[['Bodyweight squat','None','3 sets of 15. Knees track over toes.'],['Reverse lunge','None','3 sets of 10 each leg.'],['Glute bridge','Mat','3 sets of 15. Squeeze at the top.'],['Step-up','Chair or step','3 sets of 10 each leg on a sturdy step.'],['Goblet squat','Dumbbells','Hold one weight at your chest. 3 sets of 12.']],
+  arms:[['Push-up','None','Knees down if needed. 3 sets to near fatigue.'],['Chair dip','Chair or step','3 sets of 10. Keep shoulders down.'],['Pike push-up','None','Builds shoulders. 3 sets of 8.'],['Dumbbell curl','Dumbbells','3 sets of 12, slow on the way down.'],['Band overhead press','Resistance band','3 sets of 12.']],
+  back:[['Bird dog','Mat','3 sets of 10 each side. Move slowly.'],['Superman hold','Mat','3 holds of 20 seconds.'],['Wall angel','None','2 sets of 12. Posture reset.'],['Band row','Resistance band','3 sets of 12. Squeeze shoulder blades.'],['Pull-up or negative','Pull-up bar','Lower yourself slowly for 5 seconds.']],
+  cardio:[['Brisk walk','None','30 minutes at a pace where talking is possible.'],['Jump rope','Jump rope','5 rounds of 1 minute with 30 seconds rest.'],['Stair climbing','None','10 minutes, steady.'],['High knees and squats circuit','None','4 rounds of 40 seconds work, 20 seconds rest.']],
+  flex:[['Cat-cow','Mat','10 slow rounds. Loosens the spine.'],['Hip flexor stretch','Mat','60 seconds each side.'],['Hamstring stretch','None','45 seconds each leg.'],["Child's pose",'Mat','Breathe for 60 seconds.']]
+};
+const TOOLNOTE={
+  'Mat':'A thin yoga mat makes floor work comfortable. It is the first thing worth buying.',
+  'Resistance band':'Cheap, light and covers back, arms and legs. The second thing worth buying.',
+  'Dumbbells':'One adjustable pair covers most arm and leg work.',
+  'Pull-up bar':'A door-frame bar opens up back and core work.',
+  'Ab wheel':'Optional and advanced. Learn planks first.',
+  'Chair or step':'Any sturdy chair or stair works. No purchase needed.',
+  'Jump rope':'Very cheap cardio you can do anywhere.'
+};
+const NEEDS={
+  calm:['Feel calmer','Try poetry, gentle literary fiction, or mindfulness writing.'],
+  skill:['Learn a skill','Try practical non-fiction and how-to books. Pick one topic and stay with it.'],
+  think:['Think differently','Try philosophy, popular science, or essay collections.'],
+  escape:['Escape for a while','Try fantasy, mystery, or science fiction.'],
+  inspire:['Feel inspired','Try biography and memoir. Real lives are a strong push.']
+};
+const GENRES=['Fiction','Non-fiction','Self-growth','Biography','Science','Philosophy','Fantasy','Mystery','Poetry','History','Other'];
+const MOODS=['Comforting','Thoughtful','Funny','Inspiring','Thrilling','Emotional'];
+const FEELINGS=['Calm','Energised','Comfort','Focused','Happy','Release'];
+
+/* ---------- idea estimates ---------- */
+function estimate(title,details){
+  const t=(title+' '+details).toLowerCase();
+  let kind,base,parts,start;
+  if(/\b(app|apps|website|web|software|game|system|platform|tool|program|code)\b/.test(t)){
+    kind='Something to build';base=480;
+    parts=[['Learn what you need',.25],['Build a first version',.5],['Try it with one real person',.15],['Improve and share',.1]];
+    start='Write in one sentence what a person should be able to do with it, then sketch one screen.';
+  }else if(/\b(video|film|movie|youtube|channel|documentary|reel)\b/.test(t)){
+    kind='A video project';base=240;
+    parts=[['Plan and research',.25],['Record',.3],['Edit',.3],['Publish',.15]];
+    start='Write the one-sentence point of the video.';
+  }else if(/\b(book|novel|ebook|story|write|writing|blog)\b/.test(t)){
+    kind='A writing project';base=360;
+    parts=[['Outline',.2],['Write the first draft',.55],['Revise',.2],['Prepare to share',.05]];
+    start='Write five bullet points: what the reader should feel or know at the end.';
+  }else if(/\b(learn|course|study|skill|practice|language)\b/.test(t)){
+    kind='A skill to learn';base=180;
+    parts=[['Find one good resource',.15],['Practise',.6],['Test yourself',.25]];
+    start='Pick one resource and do the first lesson only.';
+  }else if(/\b(trip|travel|visit|journey)\b/.test(t)){
+    kind='A trip';base=150;
+    parts=[['Decide where and when',.25],['Budget and book',.45],['Prepare',.3]];
+    start='Write down the dates you could go and a rough budget.';
+  }else if(/\b(craft|paint|draw|sew|cook|garden|make|build)\b/.test(t)){
+    kind='Something to make';base=240;
+    parts=[['Gather materials',.2],['Make a first version',.55],['Improve it',.25]];
+    start='List what you need and make the smallest possible version.';
+  }else{
+    kind='An open idea';base=120;
+    parts=[['Say what done looks like',.25],['Make a first version',.5],['Review and improve',.25]];
+    start='Write one sentence that says what finished looks like.';
+  }
+  const low=roundTo(base*.7,30),high=roundTo(base*1.4,30);
+  return {kind,low,high,start,parts:parts.map(p=>({label:p[0],min:roundTo(base*p[1],15)}))};
+}
+
+/* ---------- recommendation ---------- */
+let skip=[],pin=null;
+function pickTask(avail){
+  let open=D.tasks.filter(t=>!t.done);
+  if(pin){const p=open.find(t=>t.id===pin);if(p)return {t:p,mode:p.remaining<=avail?'fit':'piece'};pin=null;}
+  let pool=open.filter(t=>!skip.includes(t.id));
+  if(!pool.length&&open.length){skip=[];pool=open;}
+  if(!pool.length)return null;
+  const order=(a,b)=>b.priority-a.priority||a.created-b.created;
+  const top=[...pool].sort(order)[0];
+  const bestFit=pool.filter(t=>t.remaining<=avail).sort(order)[0];
+  if(bestFit&&bestFit.priority>=top.priority)return {t:bestFit,mode:'fit'};
+  return {t:top,mode:top.remaining<=avail?'fit':'piece'};
+}
+
+/* ---------- session ---------- */
+let S=null,tickId=null;
+const clockText=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+function paintClock(){
+  if(!S)return;
+  const t=clockText(S.left);
+  ['clock','bclock'].forEach(i=>{const e=$(i);if(e)e.textContent=t;});
+}
+function tick(){
+  if(!S||S.state!=='running')return;
+  S.left=Math.max(0,Math.round((S.end-Date.now())/1000));
+  if(S.left<=0){finishSession(S.min);toast('Session complete. Nice work.');}
+  else paintClock();
+}
+function startSession(id,min){
+  clearInterval(tickId);
+  S={taskId:id,min,left:min*60,end:Date.now()+min*60000,state:'running',worked:0};
+  tickId=setInterval(tick,1000);
+  render();
+}
+function finishSession(w){clearInterval(tickId);S.state='finished';S.worked=w;render();}
+function stopSession(){
+  const worked=Math.floor((S.min*60-S.left)/60);
+  if(worked<1){clearInterval(tickId);S=null;toast('Stopped. No time logged.');render();return;}
+  finishSession(worked);
+}
+function completeWork(t,w,done,feel){
+  if(t){
+    t.remaining=done?0:Math.max(0,t.remaining-w);
+    if(t.remaining===0){t.done=true;t.doneAt=Date.now();}
+  }
+  D.bank.earned+=w;
+  addProof('task',t?t.title:'A work session',w,feel,t&&t.done);
+  if(t&&t.done&&pin===t.id)pin=null;
+  save();
+  toast(t&&t.done?`Done. That is proof. +${fmt(w)} in your free-time bank.`:`Progress logged. +${fmt(w)} in your free-time bank.`);
+}
+function resolveSession(done){
+  const t=D.tasks.find(x=>x.id===S.taskId);
+  const feel=(($('feelIn')||{}).value||'').trim();
+  completeWork(t,S.worked,done,feel);
+  S=null;render();
+}
+
+/* ---------- views ---------- */
+function opts(vals,cur,label){return vals.map(v=>`<option value="${v}"${String(v)===String(cur)?' selected':''}>${esc(label?label(v):v)}</option>`).join('');}
+const durLabel=v=>fmt(+v);
+function chips(list,cur,act,allLabel){
+  const all=allLabel?[['all',allLabel]].concat(list.map(x=>[x,x])):list.map(x=>[x,x]);
+  return `<div class="chips">${all.map(([v,l])=>`<button type="button" class="chip${cur===v?' on':''}" data-act="${act}" data-v="${esc(v)}">${esc(l)}</button>`).join('')}</div>`;
+}
+function delBtn(list,id){return `<button class="btn small danger" data-act="del" data-list="${list}" data-id="${id}" aria-label="Remove">Remove</button>`;}
+const PRI={3:['Priority','P'],2:['Important','I'],1:['Optional','O']};
+
+function viewNow(){
+  const avail=D.ui.avail;
+  const dateStr=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+  let h=`<section class="hero"><small>${esc(dateStr)}</small><h1>What deserves your attention now?</h1>
+  <p>Pick what is worth the time you have, and start. Rest never has to be earned.</p>
+  <div class="row"><label class="muted" for="availSel" style="color:#fff">I have</label>
+  <select id="availSel" data-change="avail">${opts([15,30,45,60,90,120,180],avail,durLabel)}</select>
+  <button class="btn light" data-act="recalc">Show me</button></div></section>`;
+
+  let rec='';
+  if(S&&S.state==='running'){
+    const t=D.tasks.find(x=>x.id===S.taskId);
+    rec=`<div class="rec"><div class="kind">Protected session</div><h3>${esc(t?t.title:'Focus session')}</h3>
+    <div class="clock" id="clock">${clockText(S.left)}</div>
+    ${t&&t.why?`<p><b>Why it matters:</b> ${esc(t.why)}</p>`:''}
+    <p class="belief">You decided this was worth it. Just stay with it until the timer ends.</p>
+    <button class="btn" data-act="stop">Stop and log the time I did</button></div>`;
+  }else if(S&&S.state==='finished'){
+    const t=D.tasks.find(x=>x.id===S.taskId);
+    rec=`<div class="rec"><div class="kind">Session complete</div><h3>${fmt(S.worked)} on ${esc(t?t.title:'your task')}</h3>
+    <p>That time is now proof. It adds ${fmt(S.worked)} to your free-time bank.</p>
+    <div class="form"><input id="feelIn" placeholder="How did it feel to do this? (optional)"></div>
+    <div class="row" style="margin-top:10px"><button class="btn pri" data-act="resolve" data-done="1">It is finished</button>
+    <button class="btn soft" data-act="resolve" data-done="0">Log progress, more to do</button></div></div>`;
+  }else{
+    const pk=pickTask(avail);
+    if(!pk){
+      rec=`<div class="rec"><div class="kind">Nothing waiting</div><h3>Your priorities are clear.</h3>
+      <p>The system will not invent work to keep you busy. Rest, enjoy something below, or put something new on your Rack.</p>
+      <div class="row"><button class="btn pri" data-act="rest">Rest for ${fmt(avail)}, guilt-free</button><button class="btn soft" data-act="tab" data-tab="rack">Add to Rack</button></div></div>`;
+    }else{
+      const t=pk.t,sess=Math.min(t.remaining,avail);
+      const line=pk.mode==='fit'
+        ?`This fits your ${fmt(avail)}.`
+        :`This needs ${fmt(t.remaining)} and you have ${fmt(avail)}. Today is a first piece, and a first piece counts.`;
+      rec=`<div class="rec"><div class="kind">${pk.mode==='fit'?'Worth your time now':'A first piece'}</div>
+      <h3>${esc(t.title)}</h3>
+      <div class="tags"><span class="badge">${PRI[t.priority][0]}</span><span class="badge blue">${fmt(t.remaining)} left</span></div>
+      <p>${esc(line)}</p>
+      <p><b>Why it matters:</b> ${esc(t.why)}</p>
+      ${t.gives?`<p><b>What finishing creates:</b> ${esc(t.gives)}</p>`:''}
+      <div class="reward">Doing ${fmt(sess)} of this adds ${fmt(sess)} to your free-time bank.</div>
+      <div class="hl"><b>Is this worth your time right now?</b><br>${esc(belief())}</div>
+      <div class="row"><button class="btn pri" data-act="start" data-id="${t.id}" data-min="${sess}">Yes — start ${fmt(sess)}</button>
+      ${sess>10?`<button class="btn soft" data-act="start" data-id="${t.id}" data-min="10">Yes, but just 10 minutes</button>`:''}
+      <button class="btn" data-act="markdone" data-id="${t.id}">Already done</button>
+      <button class="btn" data-act="keepidea" data-id="${t.id}">Not now — keep as an idea</button>
+      <button class="btn" data-act="another">Show another</button>
+      <button class="btn" data-act="rest">Rest instead</button></div></div>`;
+    }
+  }
+  h+=`<div class="card"><h2>Your recommendation</h2>${rec}</div>`;
+
+  h+=`<div class="card"><h2>For you, no guilt attached</h2><p class="sub">Nothing here needs to be earned. These are ideas for when you want something for yourself.</p>${freePicks()}</div>`;
+
+  const earnedToday=D.proof.filter(p=>isToday(p.at)&&(p.type==='task'||p.type==='workout')).reduce((s,p)=>s+p.minutes,0);
+  const w=weekWork();
+  const rests=D.proof.filter(p=>p.type==='rest').length;
+  h+=`<div class="grid2"><div class="card"><h2>Free-time bank</h2>
+    <div class="big">${fmt(bal())}</div>
+    <p class="muted">Earned today: ${fmt(earnedToday)}. Your work buys time you can spend on yourself. Rest and fun never need a balance. This only shows what your work has bought.</p>
+    <div class="row"><button class="btn soft small" data-act="spend" data-min="30">Spend 30 min</button><button class="btn soft small" data-act="spend" data-min="60">Spend 1 hr</button></div></div>
+    <div class="card"><h2>Your proof this week</h2>
+    <div class="big">${fmt(w.mins)}</div>
+    <p class="muted">${w.count} session${w.count===1?'':'s'} on things you decided mattered. Rested on purpose ${rests} time${rests===1?'':'s'} in total. Resting is part of the system.</p>
+    <button class="btn small" data-act="tab" data-tab="proof">See all proof</button></div></div>`;
+  return h;
+}
+
+function bestMeals(){
+  const have=i=>{i=i.toLowerCase().trim();return D.pantry.some(p=>{const q=p.toLowerCase();return q.includes(i)||i.includes(q);});};
+  const all=[...D.meals.map(m=>({...m,own:true})),...STARTERS.map((m,i)=>({...m,id:'s'+i}))];
+  return all.map(m=>{const miss=m.ings.filter(i=>!have(i));return {...m,miss,score:(m.ings.length-miss.length)/m.ings.length};})
+    .filter(m=>!D.ui.office||m.office).sort((a,b)=>b.score-a.score||a.mins-b.mins);
+}
+function freePicks(){
+  const av=D.ui.avail,day=Math.floor(Date.now()/DAY),p=[];
+  const meal=bestMeals().find(m=>m.score===1&&D.pantry.length);
+  if(meal)p.push(['🍽️','Food',`You can make ${meal.name}`,'food']);
+  const ex=EX[D.ui.focus][0];p.push(['💪','Strong',`${FOCUS[D.ui.focus]}: ${ex[0]}`,'strong']);
+  const bk=D.books.find(b=>b.status==='Reading')||D.books.find(b=>b.status==='Want to read');
+  if(bk)p.push(['📚','Book',bk.title,'books']);
+  const pl=D.places.filter(x=>x.mins<=av);
+  if(pl.length)p.push(['🗺️','Place that fits now',pl[day%pl.length].name,'places']);
+  const mv=D.movies.filter(m=>!m.watched);
+  if(mv.length)p.push(['🎬','Movie',`${mv[day%mv.length].title} (${mv[day%mv.length].mood.toLowerCase()})`,'movies']);
+  if(D.songs.length){const s=D.songs[day%D.songs.length];p.push(['🎵','Song',`${s.title} (${s.feeling.toLowerCase()})`,'songs']);}
+  return `<div class="picks">${p.map(x=>`<button class="pick" data-act="tab" data-tab="${x[3]}"><span>${x[0]} ${esc(x[1])}</span><b>${esc(x[2])}</b></button>`).join('')}</div>`;
+}
+
+function viewRack(){
+  const open=D.tasks.filter(t=>!t.done).sort((a,b)=>b.priority-a.priority||a.created-b.created);
+  let h=`<div class="card"><h2>Add to your Rack</h2><p class="sub">Things you have decided are worth your time. Every one needs a reason, because the reason is what gets you started.</p>
+  <form class="form" data-form="task">
+  <input name="title" required placeholder="What is worth doing?">
+  <div class="inline"><select name="priority" aria-label="Priority"><option value="3">Priority</option><option value="2" selected>Important</option><option value="1">Optional</option></select>
+  <select name="duration" aria-label="Time needed">${opts([15,30,45,60,90,120,180,240],60,durLabel)}</select></div>
+  <textarea name="why" required placeholder="Why does this matter to your future self? (required)"></textarea>
+  <input name="gives" placeholder="What will finishing this create? (optional, e.g. a calm evening)">
+  <button class="btn pri">Add to Rack</button></form></div>`;
+  h+=`<div class="card"><h2>On your Rack</h2>${open.length?open.map(t=>`<div class="item"><div class="grow"><b>${esc(t.title)}</b>
+    <small>${fmt(t.remaining)} left${t.remaining<t.duration?` of ${fmt(t.duration)}`:''} · ${PRI[t.priority][0]}</small><small>Why: ${esc(t.why)}</small>${t.gives?`<small>Creates: ${esc(t.gives)}</small>`:''}</div>
+    <div class="acts"><button class="btn small pri" data-act="do" data-id="${t.id}">Do this now</button>${delBtn('tasks',t.id)}</div></div>`).join(''):'<div class="empty">Nothing on your Rack. That is allowed.</div>'}</div>`;
+  return h;
+}
+
+function viewFood(){
+  const meals=bestMeals();
+  let h=`<div class="card"><h2>What is in my kitchen</h2><p class="sub">Add what you have at home. The shelf shows what you can make, and what you could take to the office.</p>
+  <form class="form" data-form="pantry"><div class="inline"><input name="items" required placeholder="rice, eggs, onion, tomato"><button class="btn pri" style="flex:0 0 auto">Add</button></div></form>
+  <div class="chips">${D.pantry.length?D.pantry.map(p=>`<button class="chip" data-act="del" data-list="pantry" data-v="${esc(p)}" title="Remove">${esc(p)} ×</button>`).join(''):'<span class="empty">Nothing added yet.</span>'}</div></div>`;
+  h+=`<div class="card"><h2>What I can make</h2>
+  <div class="chips"><button class="chip${D.ui.office?' on':''}" data-act="office">Take to office only</button></div>
+  ${meals.slice(0,9).map(m=>`<div class="item"><div class="grow"><b>${esc(m.name)}</b>
+  <small>${m.ings.map(esc).join(', ')} · ${fmt(m.mins)}${m.office?' · office-friendly':''}</small>
+  <div class="tags">${!D.pantry.length?'':m.score===1?'<span class="badge good">You have everything</span>':`<span class="badge">Missing: ${m.miss.map(esc).join(', ')}</span>`}</div></div>
+  <div class="acts"><button class="btn small soft" data-act="meal2task" data-id="${m.id}">Add to Rack</button>${m.own?delBtn('meals',m.id):''}</div></div>`).join('')||'<div class="empty">No meals match. Turn off the office filter or add your own.</div>'}</div>`;
+  h+=`<div class="card"><h2>Add my own meal</h2><form class="form" data-form="meal">
+  <input name="name" required placeholder="Meal name">
+  <input name="ings" required placeholder="Ingredients, separated by commas">
+  <div class="inline"><select name="mins" aria-label="Cooking time">${opts([5,10,20,30,45,60],20,durLabel)}</select>
+  <label class="check"><input type="checkbox" name="office">Good to take to the office</label></div>
+  <button class="btn pri">Save meal</button></form></div>`;
+  return h;
+}
+
+function viewStrong(){
+  const f=D.ui.focus,list=EX[f];
+  const since=Date.now()-7*DAY,wk=D.workouts.filter(w=>w.at>=since);
+  const tools=[...new Set(list.map(e=>e[1]).filter(t=>t!=='None'))];
+  let h=`<div class="card"><h2>Getting physically stronger</h2><p class="sub">Choose what to work on. You get the exercises, the tools, and a video to learn the form.</p>
+  <div class="chips">${Object.keys(FOCUS).map(k=>`<button class="chip${f===k?' on':''}" data-act="focus" data-v="${k}">${FOCUS[k]}</button>`).join('')}</div>
+  ${list.map(e=>`<div class="item"><div class="grow"><b>${esc(e[0])}</b><small>${esc(e[2])}</small><div class="tags"><span class="badge blue">${esc(e[1])}</span></div></div>
+  <div class="acts"><a class="btn small" href="${esc(yt('how to do '+e[0]+' proper form'))}" target="_blank" rel="noopener noreferrer">Watch how</a></div></div>`).join('')}</div>`;
+  h+=`<div class="card"><h2>Tools for ${FOCUS[f].toLowerCase()}</h2>${tools.length?tools.map(t=>`<div class="item"><div class="grow"><b>${esc(t)}</b><small>${esc(TOOLNOTE[t]||'')}</small></div></div>`).join(''):'<div class="empty">No tools needed. Start with your own body.</div>'}
+  <p class="muted">You can start today with no tools at all. Add a mat, then a band, only when you want to.</p></div>`;
+  h+=`<div class="card"><h2>Log a session</h2><p class="sub">${wk.length} session${wk.length===1?'':'s'} in the last 7 days. Training counts as time you invested, so it goes into your bank and your proof.</p>
+  <form class="form" data-form="workout"><div class="inline"><select name="mins" aria-label="Minutes">${opts([10,15,20,30,45,60],20,durLabel)}</select>
+  <button class="btn pri">Log ${FOCUS[f].toLowerCase()} session</button></div></form>
+  <div class="row" style="margin-top:8px"><button class="btn soft small" data-act="ex2task">Put a 20 min ${FOCUS[f].toLowerCase()} session on my Rack</button></div></div>`;
+  return h;
+}
+
+function viewBooks(){
+  const need=D.ui.need;
+  let h=`<div class="card"><h2>What do I need from a book right now?</h2>
+  <div class="chips">${Object.keys(NEEDS).map(k=>`<button class="chip${need===k?' on':''}" data-act="need" data-v="${k}">${NEEDS[k][0]}</button>`).join('')}</div>
+  ${need?`<div class="hl">${esc(NEEDS[need][1])}</div>`:''}`;
+  const read=D.books.filter(b=>b.status==='Read');
+  if(read.length>=2){
+    const counts={};read.forEach(b=>counts[b.genre]=(counts[b.genre]||0)+1);
+    const fresh=GENRES.filter(g=>g!=='Other'&&!counts[g]);
+    if(fresh.length)h+=`<p class="muted">You have not finished a ${esc(fresh[0].toLowerCase())} book yet. That could be a fresh direction.</p>`;
+  }
+  h+=`</div><div class="card"><h2>Add a book</h2><form class="form" data-form="book"><input name="title" required placeholder="Book title">
+  <div class="inline"><select name="genre" aria-label="Genre">${opts(GENRES,'Fiction')}</select><select name="status" aria-label="Status">${opts(['Want to read','Reading','Read'],'Want to read')}</select></div>
+  <button class="btn pri">Add to Book Shelf</button></form></div>`;
+  ['Reading','Want to read','Read'].forEach(st=>{
+    const l=D.books.filter(b=>b.status===st);
+    const nextSt=st==='Want to read'?'Reading':st==='Reading'?'Read':'';
+    h+=`<div class="card"><h2>${st} <span class="badge">${l.length}</span></h2>${l.length?l.map(b=>`<div class="item"><div class="grow"><b>${esc(b.title)}</b><small>${esc(b.genre)}</small></div>
+    <div class="acts">${nextSt?`<button class="btn small soft" data-act="bookstep" data-id="${b.id}">Move to ${nextSt}</button>`:''}${delBtn('books',b.id)}</div></div>`).join(''):'<div class="empty">Nothing here yet.</div>'}</div>`;
+  });
+  return h;
+}
+
+function viewPlaces(){
+  const av=D.ui.avail;
+  let h=`<div class="card"><h2>Places to visit around where I live</h2><p class="sub">Save the places near you. Anything that fits your available time (${fmt(av)}) is marked.</p>
+  <form class="form" data-form="place"><input name="name" required placeholder="Place name">
+  <div class="inline"><select name="mins" aria-label="Time needed">${opts([30,60,90,120,180,240],60,durLabel)}</select>
+  <select name="cost" aria-label="Cost">${opts(['Free','Low cost','Medium cost','High cost'],'Free')}</select></div>
+  <input name="note" placeholder="A note (optional)"><button class="btn pri">Save place</button></form>
+  ${D.places.length?D.places.map(p=>`<div class="item"><div class="grow"><b>${esc(p.name)}</b><small>${fmt(p.mins)} · ${esc(p.cost)}${p.note?' · '+esc(p.note):''}</small>
+  <div class="tags">${p.mins<=av?'<span class="badge good">Fits now</span>':''}${p.visits?`<span class="badge blue">Been ${p.visits} time${p.visits>1?'s':''}</span>`:''}</div></div>
+  <div class="acts"><button class="btn small soft" data-act="visited" data-id="${p.id}">I went</button>${delBtn('places',p.id)}</div></div>`).join(''):'<div class="empty" style="margin-top:10px">No places saved yet.</div>'}</div>`;
+  h+=`<div class="card"><h2>Dream places</h2><p class="sub">Places further away you want to see, and the budget they need. Amounts are in your own currency.</p>
+  <form class="form" data-form="dream"><input name="name" required placeholder="Where do you want to go?">
+  <div class="inline"><input name="budget" type="number" min="1" required placeholder="Budget needed"><input name="saved" type="number" min="0" placeholder="Saved so far (optional)"></div>
+  <button class="btn pri">Save dream place</button></form>
+  ${D.dream.length?D.dream.map(d=>{const pct=Math.min(100,Math.round((d.saved/d.budget)*100));return `<div class="item" style="display:block"><div class="row" style="justify-content:space-between"><b>${esc(d.name)}</b>${delBtn('dream',d.id)}</div>
+  <small>${d.saved} of ${d.budget} saved (${pct}%)</small><div class="bar"><i style="width:${pct}%"></i></div>
+  <form class="form" data-form="save" data-id="${d.id}" style="margin-top:8px"><div class="inline"><input name="amt" type="number" min="1" required placeholder="Add savings"><button class="btn small soft" style="flex:0 0 auto">Add</button></div></form></div>`;}).join(''):'<div class="empty" style="margin-top:10px">No dream places yet.</div>'}</div>`;
+  return h;
+}
+
+let pickedMovie=null,pickedSong=null;
+function viewMovies(){
+  const m=D.ui.mood;
+  let list=D.movies.filter(x=>m==='all'||x.mood===m).sort((a,b)=>a.watched-b.watched);
+  let h=`<div class="card"><h2>How do I feel like feeling?</h2>${chips(MOODS,m,'mood','Any mood')}
+  <div class="row"><button class="btn pri" data-act="pickmovie">Pick one for me</button></div>
+  ${pickedMovie&&find('movies',pickedMovie)?`<div class="hl"><b>${esc(find('movies',pickedMovie).title)}</b><br><span class="muted">${esc(find('movies',pickedMovie).mood)}. Enjoy it, you do not need to justify it.</span></div>`:''}</div>
+  <div class="card"><h2>Add a movie</h2><form class="form" data-form="movie"><div class="inline"><input name="title" required placeholder="Movie title" style="flex:2"><select name="mood" aria-label="Mood">${opts(MOODS,'Comforting')}</select></div>
+  <button class="btn pri">Add to Movie Shelf</button></form></div>
+  <div class="card"><h2>Movie shelf</h2>${list.length?list.map(x=>`<div class="item"><div class="grow"><b>${esc(x.title)}</b><small>${esc(x.mood)}${x.watched?' · watched':''}</small></div>
+  <div class="acts">${x.watched?'':`<button class="btn small soft" data-act="watched" data-id="${x.id}">Watched</button>`}${delBtn('movies',x.id)}</div></div>`).join(''):'<div class="empty">Nothing for this mood yet.</div>'}</div>`;
+  return h;
+}
+
+function viewSongs(){
+  const f=D.ui.feeling;
+  let list=D.songs.filter(x=>f==='all'||x.feeling===f);
+  let h=`<div class="card"><h2>Songs to feel better</h2><p class="sub">Choose how you want to feel, and get something you already know works for you.</p>${chips(FEELINGS,f,'feeling','Any feeling')}
+  <div class="row"><button class="btn pri" data-act="picksong">Pick one for me</button></div>
+  ${pickedSong&&find('songs',pickedSong)?`<div class="hl"><b>${esc(find('songs',pickedSong).title)}</b> <a href="${esc(yt(find('songs',pickedSong).title))}" target="_blank" rel="noopener noreferrer">Listen</a></div>`:''}</div>
+  <div class="card"><h2>Add a song</h2><form class="form" data-form="song"><div class="inline"><input name="title" required placeholder="Song and artist" style="flex:2"><select name="feeling" aria-label="Feeling">${opts(FEELINGS,'Calm')}</select></div>
+  <button class="btn pri">Add to Song Shelf</button></form></div>
+  <div class="card"><h2>Song shelf</h2>${list.length?list.map(x=>`<div class="item"><div class="grow"><b>${esc(x.title)}</b><small>${esc(x.feeling)}</small></div>
+  <div class="acts"><a class="btn small soft" href="${esc(yt(x.title))}" target="_blank" rel="noopener noreferrer">Listen</a>${delBtn('songs',x.id)}</div></div>`).join(''):'<div class="empty">Nothing for this feeling yet.</div>'}</div>`;
+  return h;
+}
+
+function viewIdeas(){
+  let h=`<div class="card"><h2>Ideas and how long they might take</h2><p class="sub">Not knowing where to start, or how big something really is, is what makes it hard to know if it is worth your time. Capture an idea and get a rough size, a first move, and the learning time counted in, so you can decide with real numbers instead of a guess.</p>
+  <form class="form" data-form="idea"><input name="title" required placeholder="What do you want to work on someday?">
+  <textarea name="details" placeholder="Describe it in a few words (optional)"></textarea><button class="btn pri">Estimate this idea</button></form></div>`;
+  h+=D.ideas.length?D.ideas.map(i=>`<div class="card"><h2>${esc(i.title)}</h2><div class="tags"><span class="badge blue">${esc(i.kind)}</span>${i.planned?'<span class="badge good">Steps on your Rack</span>':''}</div>
+  <p><b>Rough size: ${fmt(i.low)} to ${fmt(i.high)}</b></p>
+  ${i.parts.map(p=>`<div class="plan-line"><span>${esc(p.label)}</span><span class="muted">${fmt(p.min)}</span></div>`).join('')}
+  <div class="hl"><b>Where to start (about 30 min):</b> ${esc(i.start)}</div>
+  <p class="muted">This is a rough guess from your words, not a promise. New skills take longer than expected, so learning time is included.</p>
+  <div class="row">${i.planned?'':`<button class="btn pri small" data-act="idea2plan" data-id="${i.id}">Turn into steps on my Rack</button>`}${delBtn('ideas',i.id)}</div></div>`).join(''):'<div class="card"><div class="empty">No ideas yet.</div></div>';
+  return h;
+}
+
+function viewProof(){
+  const done=D.proof.filter(p=>p.type==='task'&&p.finished).length;
+  const total=D.proof.filter(p=>p.type==='task'||p.type==='workout').reduce((s,p)=>s+p.minutes,0);
+  const rests=D.proof.filter(p=>p.type==='rest').length;
+  const icon={task:'✅',workout:'💪',rest:'🌙',joy:'🎈'};
+  let h=`<div class="card"><h2>Proof that you can</h2><p class="sub">Every time you decided something mattered and did it, it is kept here. Rest is kept too, because it is part of a good system. Nothing here ever expires.</p>
+  <div class="grid2"><div><div class="big">${done}</div><div class="muted">things finished</div></div><div><div class="big">${fmt(total)}</div><div class="muted">invested in what mattered</div></div></div>
+  <p class="muted">${rests} time${rests===1?'':'s'} rested on purpose.</p></div>
+  <div class="card"><h2>Your log</h2>${D.proof.length?[...D.proof].reverse().slice(0,60).map(p=>`<div class="item"><div class="grow"><b>${icon[p.type]||'•'} ${esc(p.text)}</b>
+  <small>${new Date(p.at).toLocaleDateString(undefined,{month:'short',day:'numeric'})}${p.minutes?' · '+fmt(p.minutes):''}${p.finished?' · finished':''}</small>${p.feel?`<small><i>"${esc(p.feel)}"</i></small>`:''}</div></div>`).join(''):'<div class="empty">Nothing yet. Your first proof is one small session away.</div>'}</div>`;
+  return h;
+}
+
+/* ---------- render ---------- */
+let lastTab=null;
+function render(){
+  const keep={};
+  if(lastTab===D.ui.tab){
+    document.querySelectorAll('#app [name]').forEach(e=>{
+      if(e.tagName==='SELECT')return;
+      keep[e.closest('form')?.dataset.form+':'+e.name]=e.type==='checkbox'?e.checked:e.value;
+    });
+  }
+  const t=D.ui.tab;
+  const views={now:viewNow,rack:viewRack,food:viewFood,strong:viewStrong,books:viewBooks,places:viewPlaces,movies:viewMovies,songs:viewSongs,ideas:viewIdeas,proof:viewProof};
+  let h=`<nav class="nav" aria-label="Shelves">${TABS.map(x=>`<button class="${t===x[0]?'on':''}" data-act="tab" data-tab="${x[0]}">${x[1]}</button>`).join('')}</nav>`;
+  if(!storageOk)h+=`<div class="banner">Saving is not available in this view, so your data will be lost when you close it.</div>`;
+  if(S&&S.state==='running'&&t!=='now')h+=`<div class="banner"><span>Protected session running: <b id="bclock">${clockText(S.left)}</b></span><button class="btn small" data-act="tab" data-tab="now">Back to Now</button></div>`;
+  if(S&&S.state==='finished'&&t!=='now')h+=`<div class="banner"><span>Your session is complete.</span><button class="btn small pri" data-act="tab" data-tab="now">Log it</button></div>`;
+  h+=(views[t]||viewNow)();
+  $('app').innerHTML=h;
+  if(lastTab===t){
+    document.querySelectorAll('#app [name]').forEach(e=>{
+      if(e.tagName==='SELECT')return;
+      const k=e.closest('form')?.dataset.form+':'+e.name;
+      if(k in keep){if(e.type==='checkbox')e.checked=keep[k];else e.value=keep[k];}
+    });
+  }
+  lastTab=t;
+  $('resetArea').innerHTML=resetArmed
+    ?`<span class="muted">Erase everything? </span><button class="btn small danger" data-act="reset-yes">Yes, erase</button> <button class="btn small" data-act="reset-no">Cancel</button>`
+    :`<button class="btn small" data-act="reset">Reset</button>`;
+}
+let resetArmed=false;
+
+/* ---------- actions ---------- */
+function go(tab){D.ui.tab=tab;save();render();window.scrollTo({top:0});}
+function meal2task(id){
+  const m=bestMeals().find(x=>String(x.id)===String(id));if(!m)return;
+  D.tasks.push({id:uid(),title:`Make ${m.name}`,priority:2,duration:roundTo(m.mins,5),remaining:roundTo(m.mins,5),why:'Eating well is what everything else runs on.',gives:m.office?'A good meal to take to the office':'A good meal at home',created:uid(),done:false});
+  save();toast('Added to your Rack.');render();
+}
+const actions={
+  tab:b=>go(b.dataset.tab),
+  recalc:()=>{skip=[];pin=null;render();},
+  another:()=>{const pk=pickTask(D.ui.avail);if(pk)skip.push(pk.t.id);pin=null;render();},
+  start:b=>startSession(+b.dataset.id,+b.dataset.min),
+  stop:()=>stopSession(),
+  resolve:b=>resolveSession(b.dataset.done==='1'),
+  markdone:b=>{const t=find('tasks',b.dataset.id);if(!t)return;completeWork(t,t.remaining,true,'');render();},
+  do:b=>{pin=+b.dataset.id;skip=[];go('now');},
+  keepidea:b=>{
+    const t=find('tasks',b.dataset.id);if(!t)return;
+    D.ideas.push({id:uid(),title:t.title,details:t.why,kind:'Kept from your Rack',low:t.remaining,high:Math.round(t.remaining*1.5),start:t.why||'Decide what the first small step looks like.',parts:[{label:'Do it',min:t.remaining}],planned:false});
+    D.tasks=D.tasks.filter(x=>x.id!==t.id);
+    if(pin===t.id)pin=null;
+    save();toast('Kept. It is on your Ideas shelf, not lost.');render();
+  },
+  rest:()=>{addProof('rest','Rested on purpose',D.ui.avail);save();toast('Rest counts. Nothing was lost.');render();},
+  spend:b=>{const m=Math.min(+b.dataset.min,bal());if(m<=0){toast('Your bank is empty, and that is fine. Enjoy your time anyway.');return;}D.bank.spent+=m;addProof('joy','Enjoyed free time you earned',m);save();toast(`Spent ${fmt(m)}. You earned it.`);render();},
+  del:b=>{
+    const l=b.dataset.list;
+    if(l==='pantry')D.pantry=D.pantry.filter(x=>x!==b.dataset.v);
+    else D[l]=D[l].filter(x=>String(x.id)!==String(b.dataset.id));
+    save();render();
+  },
+  office:()=>{D.ui.office=!D.ui.office;save();render();},
+  meal2task:b=>meal2task(b.dataset.id),
+  focus:b=>{D.ui.focus=b.dataset.v;save();render();},
+  ex2task:()=>{const f=FOCUS[D.ui.focus];D.tasks.push({id:uid(),title:`${f} session`,priority:2,duration:20,remaining:20,why:'A stronger body makes every other part of life easier.',gives:'A stronger body, and time in your bank',created:uid(),done:false});save();toast('Session added to your Rack.');render();},
+  need:b=>{D.ui.need=D.ui.need===b.dataset.v?'':b.dataset.v;save();render();},
+  bookstep:b=>{const x=find('books',b.dataset.id);if(x){x.status=x.status==='Want to read'?'Reading':'Read';save();render();}},
+  visited:b=>{const x=find('places',b.dataset.id);if(x){x.visits=(x.visits||0)+1;addProof('joy','Visited '+x.name,x.mins);save();toast('Enjoy the memory.');render();}},
+  mood:b=>{D.ui.mood=b.dataset.v;pickedMovie=null;save();render();},
+  feeling:b=>{D.ui.feeling=b.dataset.v;pickedSong=null;save();render();},
+  pickmovie:()=>{const l=D.movies.filter(x=>!x.watched&&(D.ui.mood==='all'||x.mood===D.ui.mood));if(!l.length){toast('Nothing unwatched for this mood. Add a movie first.');return;}pickedMovie=l[Math.floor(Math.random()*l.length)].id;render();},
+  picksong:()=>{const l=D.songs.filter(x=>D.ui.feeling==='all'||x.feeling===D.ui.feeling);if(!l.length){toast('No songs for this feeling yet. Add one first.');return;}pickedSong=l[Math.floor(Math.random()*l.length)].id;render();},
+  watched:b=>{const x=find('movies',b.dataset.id);if(x){x.watched=true;save();render();}},
+  idea2plan:b=>{
+    const i=find('ideas',b.dataset.id);if(!i)return;
+    i.parts.forEach(p=>D.tasks.push({id:uid(),title:`${i.title}: ${p.label}`,priority:2,duration:p.min,remaining:p.min,why:i.details||`I want to turn "${i.title}" from a maybe into something real.`,gives:'One step closer to something real',created:uid(),done:false}));
+    i.planned=true;save();toast('Steps added to your Rack.');render();
+  },
+  reset:()=>{resetArmed=true;render();},
+  'reset-no':()=>{resetArmed=false;render();},
+  'reset-yes':()=>{clearInterval(tickId);S=null;skip=[];pin=null;resetArmed=false;D=blank();save();render();toast('Everything erased.');}
+};
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const fn=actions[b.dataset.act];if(fn)fn(b);
+});
+document.addEventListener('change',e=>{
+  const s=e.target.closest('[data-change]');if(!s)return;
+  if(s.dataset.change==='avail'){D.ui.avail=+s.value;skip=[];save();render();}
+});
+const forms={
+  task:d=>{D.tasks.push({id:uid(),title:d.title.trim(),priority:+d.priority,duration:+d.duration,remaining:+d.duration,why:d.why.trim(),gives:(d.gives||'').trim(),created:uid(),done:false});toast('Added to your Rack.');},
+  pantry:d=>{d.items.split(',').map(x=>x.trim()).filter(Boolean).forEach(x=>{if(!D.pantry.some(p=>p.toLowerCase()===x.toLowerCase()))D.pantry.push(x);});},
+  meal:d=>{D.meals.push({id:uid(),name:d.name.trim(),ings:d.ings.split(',').map(x=>x.trim()).filter(Boolean),mins:+d.mins,office:!!d.office});toast('Meal saved.');},
+  workout:d=>{const m=+d.mins;D.workouts.push({id:uid(),focus:D.ui.focus,minutes:m,at:Date.now()});D.bank.earned+=m;addProof('workout',`${FOCUS[D.ui.focus]} session`,m,'',true);toast(`Logged. +${fmt(m)} in your free-time bank.`);},
+  book:d=>{D.books.push({id:uid(),title:d.title.trim(),genre:d.genre,status:d.status});},
+  place:d=>{D.places.push({id:uid(),name:d.name.trim(),mins:+d.mins,cost:d.cost,note:(d.note||'').trim(),visits:0});},
+  dream:d=>{D.dream.push({id:uid(),name:d.name.trim(),budget:+d.budget,saved:+(d.saved||0)});},
+  movie:d=>{D.movies.push({id:uid(),title:d.title.trim(),mood:d.mood,watched:false});},
+  song:d=>{D.songs.push({id:uid(),title:d.title.trim(),feeling:d.feeling});},
+  idea:d=>{const est=estimate(d.title,d.details||'');D.ideas.push({id:uid(),title:d.title.trim(),details:(d.details||'').trim(),...est,planned:false});}
+};
+document.addEventListener('submit',e=>{
+  const f=e.target.closest('form[data-form]');if(!f)return;
+  e.preventDefault();
+  const d=Object.fromEntries(new FormData(f).entries());
+  if(f.dataset.form==='save'){
+    const x=find('dream',f.dataset.id);if(x){x.saved+=+d.amt;toast('Saved toward your dream.');}
+  }else if(forms[f.dataset.form]){forms[f.dataset.form](d);}
+  f.reset();
+  save();render();
+});
+
+render();
+</script>
+</body>
+</html>

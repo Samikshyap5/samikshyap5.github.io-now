@@ -1,0 +1,13 @@
+{
+  "name": "NOW — personal time & attention",
+  "short_name": "NOW",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8edf3",
+  "theme_color": "#d0608f",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
